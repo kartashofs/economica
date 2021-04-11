@@ -22,6 +22,8 @@ bank_instances = [{'ECM': 1.0, 'min_price': 800, 'EGP': 3.0, 'max_price': 6500},
 ]
 
 offers = [(Players.amount + 1) * 0]
+sell_offers = [(Players.amount + 1) * 0]
+investment = [(Players.amount + 1) * {'month': 0, 'got': 0}]
 
 def payments(player):
     for x in players:
@@ -47,3 +49,44 @@ def get_bank_choice(offers):
         if x >= current_min:
             x.cash -= current_esm * x
             x.esm += current_esm
+
+def production(players):
+    for x in players[1:]:
+        if x.ECM >= 1:
+            if x.autofab == 0:
+                while x.cash > 3500:
+                    x.cash -= 2000
+                    x.ecm -= 1
+                    x.egp += 1
+            else:
+                while x.cash > 3500:
+                    x.cash -= 3000
+                    x.ecm -= 2
+                    x.egp += 2
+
+def sellebration(players):
+    global current_egp, current_max, budget
+    current_egp = current_rate.get('EGP')
+    current_max = current_rate.get('max_price')
+    for x in players[1:]:
+        if x.egp >= 1: 
+            budget = randint(current_max - 1500, current_max + 1500)
+            sell_offers.append(budget)
+
+def gang_bank_choice(offers, players):
+    global encounter
+    encounter = 0
+    for x in offers:
+        if x != 0 and x <= current_max:
+            players[encounter].cash += current_egp * x
+            if players[encounter].egp >= current_egp: players[encounter].egp -= current_egp
+            else: players[encounter].egp = 0
+            encounter += 1
+
+def be_invested(players):
+    encounter = 1
+    for x in players[1:]:
+        if x.cash <= 1500:
+            investment_amount = x.fab * 5000 + x.autofab * 10000
+            investment[encounter].update(month=month, got=investment_amount)
+            x.cash += investment_amount
