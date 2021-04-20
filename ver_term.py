@@ -94,6 +94,11 @@ def be_invested(players):
 
 def build_factories(players):
     for x in players[1:]:
+        if x.cash - 7000 > 3500:
+            for i in buildings[x]:
+                for o in i:
+                    if o.get('remaining') == 0:
+                        o.update(remaining=9, type=2)
         if x.cash - 5000 > 3500:
             for i in buildings[x]:
                 for o in i:
