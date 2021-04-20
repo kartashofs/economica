@@ -24,6 +24,7 @@ bank_instances = [{'ECM': 1.0, 'min_price': 800, 'EGP': 3.0, 'max_price': 6500},
 offers = [(Players.amount + 1) * 0]
 sell_offers = [(Players.amount + 1) * 0]
 investment = [(Players.amount + 1) * {'month': 0, 'got': 0}]
+buildings = [(Players.amount + 1) * [6 * {'remaining': 0, 'type': 0}]]
 
 def payments(player):
     for x in players:
@@ -90,3 +91,11 @@ def be_invested(players):
             investment_amount = x.fab * 5000 + x.autofab * 10000
             investment[encounter].update(month=month, got=investment_amount)
             x.cash += investment_amount
+
+def build_factories(players):
+    for x in players[1:]:
+        if x.cash - 5000 > 3500:
+            for i in buildings[x]:
+                for o in i:
+                    if o.get('remaining') == 0:
+                        o.update(remaining=5, type=1)
